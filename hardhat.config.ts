@@ -1,7 +1,7 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 //this will help you to verify your address on Etherscan
-require("@nomiclabs/hardhat-etherscan");
+import "@nomiclabs/hardhat-etherscan";
 
 const dotenv = require('dotenv');
 dotenv.config();

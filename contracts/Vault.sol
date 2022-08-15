@@ -58,23 +58,43 @@ contract Vault {
       return _id;
   }
 
-   function withdrawAmount(uint _id, uint _withdrawAmount) external hasTimeElapse(_id) {
+   function withdrawAmount(uint _id) external hasTimeElapse(_id) {
 
     BeneficiaryProperties storage BP = _beneficiaryProperties[_id];
     address user = BP.beneficiary;
     uint _amount = BP.amountAllocated;
     require(user == msg.sender, "not a beneficiary for a grant");
     require(_amount > 0, "you  have no money!");
-    require(_amount >= _withdrawAmount, "I think you have less you want to withdraw");
+    // require(_amount >= _withdrawAmount, "I think you have less you want to withdraw");
 
     //getBalance function is passed inside here
     uint getBal = getBalance();
     require(getBal >= _amount, "insufficient");
-    // BP.amountAllocated = 0;
-    BP.amountAllocated = _amount - _withdrawAmount;
-    payable(user).transfer(_withdrawAmount);
+    BP.amountAllocated = 0;
+    // BP.amountAllocated = _amount - _withdrawAmount;
+    payable(user).transfer(_amount);
 
    }
+
+    // payable keyword reduces gas
+    function withdraw(uint _id) external hasTimeElapse(_id) {
+        BeneficiaryProperties storage BP = _beneficiaryProperties[_id];
+
+        address user = BP.beneficiary;
+        require(user == msg.sender, "not a beneficiary for a grant!");
+
+        uint _amount = BP.amountAllocated;
+        require(_amount > 0, "this beneficiary has no money!");
+
+        // how to call a function in a function
+        uint getBal = getBalance();
+        require(getBal >= _amount, "Insufficient fund");
+
+        BP.amountAllocated = 0;
+
+        payable(user).transfer(_amount);
+
+    }
 
 //   The Assignment: write a new withdraw function that allows the grant 
 //   beneficiary to withdraw any amount he/she choses, not the predefined 
